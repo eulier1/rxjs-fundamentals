@@ -7,14 +7,35 @@ describe('Exercise: Creating Observables', () => {
      * the values into the `results` array, and get the expectation below to
      * pass.
      */
-    it.skip('should create an observable out of a single value', () => {
+    it('should create an observable out of a single value', () => {
       const result = [];
+
+      const observable$ = of(1);
+
+      observable$.subscribe((value) => {
+        result.push(value);
+      });
 
       expect(result).toEqual([1]);
     });
 
-    it.skip('should take a series of objects as arguments and create an observable', () => {
+    it('should take a series of objects as arguments and create an observable', () => {
       const result = [];
+
+      const observable$ = of(
+        { type: 'INCREMENT', payload: 1 },
+        { type: 'RESET' },
+        { type: 'INCREMENT', payload: 2 },
+        { type: 'DECREMENT', payload: 1 },
+      );
+
+      // https://rxjs.dev/guide/observable#observables-as-generalizations-of-functions
+
+      observable$.subscribe({
+        next(value) {
+          result.push(value);
+        },
+      });
 
       expect(result).toEqual([
         { type: 'INCREMENT', payload: 1 },
@@ -26,8 +47,21 @@ describe('Exercise: Creating Observables', () => {
   });
 
   describe(from, () => {
-    it.skip('should take an array of objects as arguments and create an observable', () => {
+    it('should take an array of objects as arguments and create an observable', () => {
       const result = [];
+
+      const observable$ = from([
+        { type: 'INCREMENT', payload: 1 },
+        { type: 'RESET' },
+        { type: 'INCREMENT', payload: 2 },
+        { type: 'DECREMENT', payload: 1 },
+      ]);
+
+      observable$.subscribe({
+        next(value) {
+          result.push(value);
+        },
+      });
 
       expect(result).toEqual([
         { type: 'INCREMENT', payload: 1 },
@@ -37,7 +71,7 @@ describe('Exercise: Creating Observables', () => {
       ]);
     });
 
-    it.skip('should create an observable from a generator', () => {
+    it('should create an observable from a generator', () => {
       function* values() {
         yield 1;
         yield 2;
@@ -46,6 +80,14 @@ describe('Exercise: Creating Observables', () => {
       }
 
       const result = [];
+
+      const observable$ = from(values());
+
+      observable$.subscribe({
+        next(value) {
+          result.push(value);
+        },
+      });
 
       expect(result).toEqual([1, 2, 3]);
     });
