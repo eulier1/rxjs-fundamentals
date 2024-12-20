@@ -105,12 +105,35 @@ describe('Exercise: Creating Observables', () => {
      * Your mission: collect the values as their emitted, but then
      * only assert your expectation once the observable has completed.
      */
-    it.skip('should create an observable from a promise', (done) => {
+    it('should create an observable from a promise', (done) => {
       const promise = Promise.resolve(1);
       const result = [];
 
-      expect(result).toEqual([1]);
-      done();
+      const observable$ = from(promise);
+
+      observable$.subscribe({
+        next(value) {
+          result.push(value);
+        },
+        complete() {
+          expect(result).toEqual([1]);
+          done();
+        },
+      });
+
+      /* If we trying to evaluate promises with observable and test it.
+      Our test will fail because, 
+      - We subscribe to the promise
+      - It's pass to the microtask on the event loop
+      - Our test want to see if there anything on the array
+      - There is nothing there yet
+      - Check the test failed
+      - And then put the value on the array 
+
+      We're going to see later how this thing works behind the scene
+      */
+      // expect(result).toEqual([1]);
+      // done();
     });
 
     /**
@@ -118,11 +141,17 @@ describe('Exercise: Creating Observables', () => {
      * opportunity to see how to respond to an error—in this case, a rejected
      * promise—in our observables.
      */
-    it.skip('should create an observable from a promise that rejects', (done) => {
+    it('should create an observable from a promise that rejects', (done) => {
       const promise = Promise.reject({ error: 'Something terrible happened' });
 
-      expect(error).toEqual({ error: 'Something terrible happened' });
-      done();
+      const observable$ = from(promise);
+
+      observable$.subscribe({
+        error(error) {
+          expect(error).toEqual({ error: 'Something terrible happened' });
+          done();
+        },
+      });
     });
   });
 });
