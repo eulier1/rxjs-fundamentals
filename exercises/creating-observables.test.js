@@ -1,4 +1,4 @@
-import { from, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 
 describe('Exercise: Creating Observables', () => {
   describe(of, () => {
@@ -153,5 +153,32 @@ describe('Exercise: Creating Observables', () => {
         },
       });
     });
+  });
+  it('should deal with a bespoke observable (Bonus)', () => {
+    const result = [];
+
+    const observable$ = new Observable(function subscribe(subscriber) {
+      subscriber.next('John');
+      subscriber.next('Paul');
+      subscriber.next('George');
+      subscriber.next('Ringo');
+      subscriber.complete();
+    });
+
+    // It's important to stick to subscriber contract
+    // using next to yield values and complete or error to stop the streaming.
+    // const observable$ = new Observable(function subscribe(subscriber) {
+    //   subscriber.next('John');
+    //   subscriber.next('Paul');
+    //   subscriber.next('George');
+    //   subscriber.complete();
+    //   subscriber.next('Ringo');
+    // });
+
+    observable$.subscribe((value) => {
+      result.push(value);
+    });
+
+    expect(result).toEqual(['John', 'Paul', 'George', 'Ringo']);
   });
 });
