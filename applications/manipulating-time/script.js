@@ -19,6 +19,6 @@ import {
   setStatus,
 } from './utilities';
 
-const buttonClicks$ = fromEvent(button, 'click');
+const buttonClicks$ = fromEvent(button, 'click').pipe(delay(2000));
 
 buttonClicks$.subscribe(addMessageToDOM);
