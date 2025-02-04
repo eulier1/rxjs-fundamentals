@@ -23,7 +23,7 @@ const isRunning = merge(start$, pause$).pipe(startWith(false));
 
 const first$ = interval(1000).pipe(map(labelWith('First')), take(4));
 const second$ = interval(1000).pipe(map(labelWith('Second')), take(4));
-const combined$ = merge(first$, second$);
+const combined$ = concat(first$, second$);
 
 isRunning.subscribe(setStatus);
 
