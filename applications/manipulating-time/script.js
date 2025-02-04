@@ -19,6 +19,7 @@ import {
   setStatus,
 } from './utilities';
 
-const buttonClicks$ = fromEvent(button, 'click').pipe(delay(2000));
+const panicClicks$ = fromEvent(panicButton, 'click');
+const buttonClicks$ = fromEvent(button, 'click').pipe(debounceTime(2000));
 
 buttonClicks$.subscribe(addMessageToDOM);
