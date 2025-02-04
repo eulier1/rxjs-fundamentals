@@ -20,6 +20,8 @@ import {
 } from './utilities';
 
 const panicClicks$ = fromEvent(panicButton, 'click');
-const buttonClicks$ = fromEvent(button, 'click').pipe(throttleTime(2000));
+const buttonClicks$ = fromEvent(button, 'click').pipe(
+  debounce(() => panicClicks$),
+);
 
 buttonClicks$.subscribe(addMessageToDOM);
