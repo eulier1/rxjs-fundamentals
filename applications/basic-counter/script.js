@@ -1,17 +1,25 @@
-import { fromEvent, interval, merge, NEVER } from 'rxjs';
+import {
+  fromEvent,
+  interval,
+  merge,
+  NEVER,
+  switchMap,
+  scan,
+  tap,
+  mapTo,
+} from 'rxjs';
 import { setCount, startButton, pauseButton } from './utilities';
 
-const start$ = fromEvent(startButton, 'click');
-const pause$ = fromEvent(pauseButton, 'click');
+const start$ = fromEvent(startButton, 'click').pipe(mapTo(true));
+const pause$ = fromEvent(pauseButton, 'click').pipe(mapTo(true));
 
-const interval$ = interval(1000);
-let subscription;
+const counter$ = merge(start$, pause$).pipe(
+  tap((value) => console.log(value)),
+  switchMap((isRunning) => {
+    return isRunning ? interval(1000) : NEVER;
+  }),
+  tap((value) => console.log(value)),
+  scan((count) => count + 1, 0),
+);
 
-start$.subscribe((clickEvent) => {
-  // Every time we start the counter, we create a new subscription to that series of eventual values; Observables.
-  subscription = interval$.subscribe(setCount);
-});
-
-pause$.subscribe((clickEvent) => {
-  subscription.unsubscribe();
-});
+counter$.subscribe(setCount);
