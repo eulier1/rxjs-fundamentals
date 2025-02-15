@@ -21,4 +21,18 @@ import {
   setError,
 } from './utilities';
 
-const endpoint = 'http://localhost:3333/api/facts';
+const endpoint = 'http://localhost:3333/api/facts?delay=2000&chaos=true';
+
+const fetch$ = fromEvent(fetchButton, 'click').pipe(
+  // fire the observable every time an events pass through
+  // mergeMap(() =>
+  //   fromFetch(endpoint).pipe(mergeMap((response) => response.json())),
+  // ),
+
+  // with exhaustMap we're waiting for that observable to complete (fromFetch), and then, take another event.
+  exhaustMap(() =>
+    fromFetch(endpoint).pipe(mergeMap((response) => response.json())),
+  ),
+);
+
+fetch$.subscribe(addFacts);
